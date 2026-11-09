@@ -1,0 +1,35 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tutor {
+  id       Int    @id @default(autoincrement())
+  nome     String
+  email    String @unique
+  telefone String
+  pets     Pet[]
+}
+
+model Pet {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  especie      String
+  raca         String
+  tutorId      Int
+  tutor        Tutor         @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+  agendamentos Agendamento[]
+}
+
+model Agendamento {
+  id        Int      @id @default(autoincrement())
+  dataHora  DateTime
+  servico   String
+  status    String   @default("Agendado")
+  petId     Int
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+}
